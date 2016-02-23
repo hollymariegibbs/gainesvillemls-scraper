@@ -29,24 +29,24 @@ func getMLSNumbers() []string {
 	data.Add("LM_MST_prop_cdYYNT", "1,9,10,11,12,13,14")
 	data.Add("LM_MST_mls_noYYNT", "")
 	// Minimum Price
-	data.Add("LM_MST_list_prcYNNB", "")
+	data.Add("LM_MST_list_prcYNNB", "70000")
 	// Maximum Price
-	data.Add("LM_MST_list_prcYNNE", "175000")
+	data.Add("LM_MST_list_prcYNNE", "150000")
 	data.Add("LM_MST_prop_cdYNNL[]", "9")
 	// Minimum Square Footage
 	data.Add("LM_MST_sqft_nYNNB", "")
 	// Maximum Square Footage
 	data.Add("LM_MST_sqft_nYNNE", "")
 	// Minimum Year Built
-	data.Add("LM_MST_yr_bltYNNB", "1981")
+	data.Add("LM_MST_yr_bltYNNB", "")
 	// Maximum Year Built
 	data.Add("LM_MST_yr_bltYNNE", "")
 	// Minimum Bedrooms
-	data.Add("LM_MST_bdrmsYNNB", "3")
+	data.Add("LM_MST_bdrmsYNNB", "2")
 	// Maximum Bedrooms
 	data.Add("LM_MST_bdrmsYNNE", "")
 	// Minimum Bathrooms
-	data.Add("LM_MST_bathsYNNB", "2")
+	data.Add("LM_MST_bathsYNNB", "1")
 	// Maximum Bathrooms
 	data.Add("LM_MST_bathsYNNE", "")
 	data.Add("LM_MST_hbathYNNB", "")
@@ -177,8 +177,8 @@ func getMLSDetail(MLSNumber string) string {
 
 	parsedHTML := html.NewTokenizer(responseBody)
 
-	constructionFlag := false
-	constructionCounter := 2
+	fencingFlag := false
+	fencingCounter := 2
 
 tokenLoop:
 	for {
@@ -188,17 +188,17 @@ tokenLoop:
 			break tokenLoop
 		case tt == html.TextToken:
 			t := parsedHTML.Token()
-			if constructionFlag == true {
-				constructionCounter--
-				if constructionCounter == 0 {
-					if strings.Contains(strings.ToLower(t.String()), "block") {
+			if fencingFlag == true {
+				fencingCounter--
+				if fencingCounter == 0 {
+					if !strings.Contains(strings.ToLower(t.String()), "none") {
 						MLSURL = fmt.Sprintf("http://www.gainesvillemls.com/gan/idx/index.php?key=52633f4973cf845e55b18c8e22ab08d5&mls=%s\n", MLSNumber)
 					}
-					constructionFlag = false
+					fencingFlag = false
 				}
 			}
-			if t.String() == "Construction-exterior:" {
-				constructionFlag = true
+			if t.String() == "Fencing:" {
+				fencingFlag = true
 			}
 
 		}
